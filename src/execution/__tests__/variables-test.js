@@ -46,17 +46,20 @@ const TestComplexScalar = new GraphQLScalarType({
 const TestInputCustomScalar = new GraphQLScalarType({
   name: 'InputCustomScalar',
   serialize(value) {
-    return value;
+    if (value === 'IntermediateValue') {
+      return 'OutputValue';
+    }
+    return null;
   },
   parseValue(value) {
     if (value === 'InputValue') {
-      return 'ConvertedValue';
+      return 'IntermediateValue';
     }
     return null;
   },
   parseLiteral(ast) {
     if (ast.value === 'InputValue') {
-      return 'ConvertedValue';
+      return 'IntermediateValue';
     }
     return null;
   },
@@ -120,10 +123,20 @@ const TestType = new GraphQLObjectType({
       type: GraphQLString,
       defaultValue: 'Hello World',
     }),
-    fieldWithDefaultCustomScalarArgumentValue: fieldWithInputArg({
+    fieldWithDefaultCustomScalarArgumentValue: {
       type: TestInputCustomScalar,
-      defaultValue: 'InputValue',
-    }),
+      args: {
+        input: {
+          type: TestInputCustomScalar,
+          defaultValue: "IntermediateValue",
+        },
+      },
+      resolve(_, args) {
+        if (args.hasOwnProperty('input')) {
+          return args.input;
+        }
+      },
+    },
     fieldWithNonNullableStringInputAndDefaultArgumentValue: fieldWithInputArg({
       type: GraphQLNonNull(GraphQLString),
       defaultValue: 'Hello World',
@@ -1018,7 +1031,7 @@ describe('Execute: Handles inputs', () => {
 
       expect(result).to.deep.equal({
         data: {
-          fieldWithDefaultCustomScalarArgumentValue: "'ConvertedValue'",
+          fieldWithDefaultCustomScalarArgumentValue: "OutputValue",
         },
       });
     });
