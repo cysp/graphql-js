@@ -742,11 +742,15 @@ function defineFieldMap<TSource, TContext>(
       );
       field.args = Object.keys(argsConfig).map(argName => {
         const arg = argsConfig[argName];
+        var defaultValue = arg.defaultValue;
+        if (defaultValue !== undefined && arg.type.parseValue) {
+          arg.type.parseValue(arg.defaultValue);
+        }
         return {
           name: argName,
           description: arg.description === undefined ? null : arg.description,
           type: arg.type,
-          defaultValue: arg.defaultValue,
+          defaultValue: defaultValue,
           astNode: arg.astNode,
         };
       });
