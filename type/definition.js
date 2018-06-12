@@ -569,18 +569,11 @@ function defineFieldMap(type, fieldsThunk) {
       !isPlainObj(argsConfig) ? (0, _invariant.default)(0, "".concat(type.name, ".").concat(fieldName, " args must be an object with argument ") + 'names as keys.') : void 0;
       field.args = Object.keys(argsConfig).map(function (argName) {
         var arg = argsConfig[argName];
-        var argType = arg.type;
-        var defaultValue = arg.defaultValue;
-
-        if (defaultValue !== undefined && defaultValue != null && isScalarType(argType)) {
-          defaultValue = argType.parseValue(arg.defaultValue);
-        }
-
         return {
           name: argName,
           description: arg.description === undefined ? null : arg.description,
           type: arg.type,
-          defaultValue: defaultValue,
+          defaultValue: arg.defaultValue,
           astNode: arg.astNode
         };
       });
