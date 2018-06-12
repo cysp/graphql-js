@@ -131,11 +131,7 @@ export function getArgumentValues(def, node, variableValues) {
     if (!hasValue && argDef.defaultValue !== undefined) {
       // If no argument was provided where the definition has a default value,
       // use the default value.
-      if (argDef.astNode) {
-        coercedValues[name] = valueFromAST(argDef.astNode.defaultValue, argType);
-      } else {
-        coercedValues[name] = argDef.defaultValue;
-      }
+      coercedValues[name] = argDef.defaultValue;
     } else if ((!hasValue || isNull) && isNonNullType(argType)) {
       // If no argument or a null value was provided to an argument with a
       // non-null type (required), produce a field error.
