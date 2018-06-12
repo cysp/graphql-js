@@ -128,7 +128,7 @@ const TestType = new GraphQLObjectType({
       args: {
         input: {
           type: TestInputCustomScalar,
-          defaultValue: "IntermediateValue",
+          defaultValue: 'IntermediateValue',
         },
       },
       resolve(_, args) {
@@ -1031,7 +1031,7 @@ describe('Execute: Handles inputs', () => {
 
       expect(result).to.deep.equal({
         data: {
-          fieldWithDefaultCustomScalarArgumentValue: "OutputValue",
+          fieldWithDefaultCustomScalarArgumentValue: 'OutputValue',
         },
       });
     });
