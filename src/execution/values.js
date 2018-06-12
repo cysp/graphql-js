@@ -17,7 +17,7 @@ import { typeFromAST } from '../utilities/typeFromAST';
 import { valueFromAST } from '../utilities/valueFromAST';
 import { Kind } from '../language/kinds';
 import { print } from '../language/printer';
-import { isInputType, isNonNullType } from '../type/definition';
+import { isInputType, isNonNullType, isScalarType } from '../type/definition';
 import type { ObjMap } from '../jsutils/ObjMap';
 import type { GraphQLField } from '../type/definition';
 import type { GraphQLDirective } from '../type/directives';
@@ -153,11 +153,8 @@ export function getArgumentValues(
     if (!hasValue && argDef.defaultValue !== undefined) {
       // If no argument was provided where the definition has a default value,
       // use the default value.
-      if (argDef.astNode) {
-        coercedValues[name] = valueFromAST(
-          argDef.astNode.defaultValue,
-          argType,
-        );
+      if (isScalarType(argType)) {
+        coercedValues[name] = argType.parseValue(argDef.defaultValue);
       } else {
         coercedValues[name] = argDef.defaultValue;
       }
